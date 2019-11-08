@@ -63,10 +63,50 @@ $superheroes = [
   ], 
 ];
 
-?>
+function is_match($key, $hero){
+  return $key == $hero["name"] || $key == $hero["alias"];
+}
 
+function find_hero($key, $superheroes) {
+  foreach ($superheroes as $hero) {
+    if (is_match($key, $hero)) {
+      return $hero;
+    }
+  }
+  return [];
+}
+
+try {
+  // print_r("WE IN THE TRY");
+  // if (True) {
+  if ($_SERVER["REQUEST_METHOD"] === "GET") {
+    $key = $_GET["query"];
+    file_put_contents("log", $key);
+    // $key = "Hulk";
+    // print_r($key);
+    header('Content-type: application/json');
+    echo json_encode(find_hero($key, $superheroes));
+  }
+}
+catch( Exception $e ) {
+  clog("Invalid request type\nerror -> " . $e->getMessage());
+}
+
+function clog( $data ) {
+    $output = $data;
+    if ( is_array( $output ) )
+        $output = implode( ',', $output);
+
+    echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
+}
+
+/*
 <ul>
 <?php foreach ($superheroes as $superhero): ?>
   <li><?= $superhero['alias']; ?></li>
 <?php endforeach; ?>
 </ul>
+*/
+
+?>
+
