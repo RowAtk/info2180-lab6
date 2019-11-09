@@ -1,31 +1,20 @@
 
 $( document ).ready(function () {
 	$("#search-button").click(search_hero);
-	
 });
 
 let baseURI = "superheroes.php";
 
 
 function search_hero(){
-	console.log("CLICK");
 	let input = $('#search-field').val();
-	// console.log($('#search-field'))
-	console.log(input)
 	get_hero(input)
 	.then(hero => show_hero(hero));		
 	
 }
 
 function show_hero(hero){
-	console.log(hero);
 	$("#result").html(hero);
-	if ( hero ){
-	// place hero in result div
-		
-	} else {
-		// hero not found
-	}
 }
 
 async function get_hero(name) {
@@ -34,8 +23,6 @@ async function get_hero(name) {
 	.then(response => response.text())
 	.then(data => hero = data )
 	.catch(error => { console.log("Error: ", error)} );
-
-	// await console.log(hero);
 	return hero;
 }
 
