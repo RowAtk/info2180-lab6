@@ -63,34 +63,70 @@ $superheroes = [
   ], 
 ];
 
+// tests if key matches hero - based on fixed criteria (name or alias)
 function is_match($key, $hero){
   return $key == $hero["name"] || $key == $hero["alias"];
 }
 
+// find a hero from array using a given key - must be exact match
 function find_hero($key, $superheroes) {
-  foreach ($superheroes as $hero) {
-    if (is_match($key, $hero)) {
-      return $hero;
+  if($key != ""){
+    foreach ($superheroes as $hero) {
+      if (is_match($key, $hero)) {
+        return $hero;
+      }
     }
+    return [];
+  } else {
+    return $superheroes;
   }
-  return [];
 }
 
-try {
-  // print_r("WE IN THE TRY");
-  // if (True) {
-  if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $key = $_GET["query"];
-    file_put_contents("log", $key);
-    // $key = "Hulk";
-    // print_r($key);
-    header('Content-type: application/json');
-    echo json_encode(find_hero($key, $superheroes));
+// convert hero to desired html format
+function heroToHTML($hero){
+  file_put_contents("log", $hero);
+  if($hero === []){
+    return "<p class=\"error\">SUPERHERO NOT FOUND<p>";
+  } else {
+    $alias = strtoupper($hero["alias"]);
+    $name = strtoupper($hero["name"]);
+    $bio = $hero["biography"];
+    return <<< EOT
+    <h3>{$alias}</h3>
+    <h4>A.K.A. {$name}</h4>
+    <p>{$bio}</p>
+EOT;
   }
 }
-catch( Exception $e ) {
-  clog("Invalid request type\nerror -> " . $e->getMessage());
+
+// get all heroes in html format
+function allHeroes($superheroes){
+  $list = "";
+  foreach ($superheroes as $superhero){
+    $list.="<li>{$superhero['alias']}</li>\n";
+  }
+  return <<<EOT
+  <ul>
+    {$list}
+  </ul>
+EOT;
+
 }
+
+// handle request from client
+function handleRequest($superheroes){
+  if ($_SERVER["REQUEST_METHOD"] === "GET") {
+    $key = $_GET["query"];
+    file_put_contents("log", $key); // debugging
+    if($key) {
+      $hero = find_hero($key, $superheroes);
+      echo heroToHTML($hero);
+    } else {
+      echo allHeroes($superheroes);
+    }
+  }
+}
+
 
 function clog( $data ) {
     $output = $data;
@@ -100,13 +136,8 @@ function clog( $data ) {
     echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
 }
 
-/*
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
-*/
 
+// actual execution and handling of request
+handleRequest($superheroes);
 ?>
 

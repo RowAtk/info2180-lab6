@@ -1,6 +1,6 @@
 
 $( document ).ready(function () {
-	$("#search").click(search_hero);
+	$("#search-button").click(search_hero);
 	
 });
 
@@ -12,16 +12,14 @@ function search_hero(){
 	let input = $('#search-field').val();
 	// console.log($('#search-field'))
 	console.log(input)
-	if( input ){
-		get_hero(input)
-		.then(hero => show_hero(hero));		
-	} else {
-		get_all_heroes();
-	}
+	get_hero(input)
+	.then(hero => show_hero(hero));		
+	
 }
 
 function show_hero(hero){
 	console.log(hero);
+	$("#result").html(hero);
 	if ( hero ){
 	// place hero in result div
 		
@@ -33,7 +31,7 @@ function show_hero(hero){
 async function get_hero(name) {
 	let hero = null;
 	await fetch(`${baseURI}?query=${name}`)
-	.then(response => response.json())
+	.then(response => response.text())
 	.then(data => hero = data )
 	.catch(error => { console.log("Error: ", error)} );
 
