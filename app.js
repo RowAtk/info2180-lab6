@@ -7,7 +7,7 @@ let baseURI = "superheroes.php";
 
 
 function search_hero(){
-	let input = $('#search-field').val();
+	let input = $('#search-field').val().trim();
 	get_hero(input)
 	.then(hero => show_hero(hero));		
 	

@@ -116,14 +116,16 @@ EOT;
 // handle request from client
 function handleRequest($superheroes){
   if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $key = $_GET["query"];
-    file_put_contents("log", $key); // debugging
+    $key = $_GET["query"];  
     if($key) {
-      $hero = find_hero($key, $superheroes);
-      echo heroToHTML($hero);
+      if(filter_var($key)) {
+        $hero = find_hero($key, $superheroes);
+        echo heroToHTML($hero);
+      } 
     } else {
-      echo allHeroes($superheroes);
+        echo allHeroes($superheroes);
     }
+    // file_put_contents("log", $key); // debugging
   }
 }
 
